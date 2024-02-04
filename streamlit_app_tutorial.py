@@ -28,7 +28,7 @@ conn = st.connection('mysql', type='sql')
 # place st.cached_data right before the query
 # the query uses the object conn (defined above) and the method query
 
-@st.cache_data(ttl=1=30)
+@st.cache_data(ttl=30)
 def fetch_data():
     df = conn.query('SELECT tempF, humidity, YEAR(date_add(time_stamp,INTERVAL-5 HOUR)) as year, MONTH(date_add(time_stamp,INTERVAL-5 HOUR)) as month, DAY(date_add(time_stamp,INTERVAL-5 HOUR)) as day, HOUR(date_add(time_stamp,INTERVAL-5 HOUR)) as hour, MINUTE(date_add(time_stamp,INTERVAL-5 HOUR)) as minute, SECOND(date_add(time_stamp,INTERVAL-5 HOUR)) as second, date_add(time_stamp,INTERVAL-5 HOUR) as ts FROM esp32_dht ORDER BY time_stamp DESC LIMIT 5760;', ttl=1)
     return df

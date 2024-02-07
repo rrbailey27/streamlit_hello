@@ -22,13 +22,13 @@ conn = st.connection('mysql', type='sql')
 
 
 # st.cache_data is important for your app when it runs for a few days
-# we have found that setting Time To Live (ttl) to 30 seconds works well 
+# we have found that setting Time To Live (ttl) to 55 seconds works well 
 # for a project that posts new data every minute and 
 # the While True delay is 2 seconds
 # place st.cached_data right before the query
 # the query uses the object conn (defined above) and the method query
 
-@st.cache_data(ttl=30)
+@st.cache_data(ttl=55)
 def fetch_data():
     df = conn.query('SELECT tempF, humidity, YEAR(date_add(time_stamp,INTERVAL-5 HOUR)) as year, MONTH(date_add(time_stamp,INTERVAL-5 HOUR)) as month, DAY(date_add(time_stamp,INTERVAL-5 HOUR)) as day, HOUR(date_add(time_stamp,INTERVAL-5 HOUR)) as hour, MINUTE(date_add(time_stamp,INTERVAL-5 HOUR)) as minute, SECOND(date_add(time_stamp,INTERVAL-5 HOUR)) as second, date_add(time_stamp,INTERVAL-5 HOUR) as ts FROM esp32_dht20 ORDER BY time_stamp DESC LIMIT 5760;', ttl=1)
     return df
@@ -58,7 +58,7 @@ while True:
     #forming a formatted string for the date and time by concatenating several strings 
     lasttime_str = "Time of Last Data: "+ month + "/" + day + "/" + year + " at "+ hour + ":" + minute + ":" + second
    
-   #the next section defines the contents of the datadisplay conatiner
+   #the next section defines the contents of the datadisplay container
     with datadisplay.container():
         
         #the first item is printing the lasttime_str
@@ -75,7 +75,7 @@ while True:
         )
 
         kpi2.metric(
-            label="Humdity",
+            label="Humidity",
             value="{} %".format(current_humidity),
             delta="{} %".format(humid_delta)
         )
